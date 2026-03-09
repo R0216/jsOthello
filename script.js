@@ -34,11 +34,27 @@ function drawBoard() {
     }
 }
 
+function drawPieces(){
+    for (let y = 0; y < 8; y++){
+        for (let x = 0; x < 8; x++){
+            if(board[y][x] !== 0){
+                context.beginPath();
+                context.arc(x + 0.5, y + 0.5, 0.4, 0, Math.PI * 2);
+                context.fillStyle = board[y][x] === 1 ? "black" : "white";
+                context.fill();
+                context.closePath();
+            }
+        }
+    }
+}
 
+function updateGame(){
+    drawBoard();
+    drawPieces();
+}
 
 
 const board = Array.from({length: 8}, ()=> new Array(8).fill(0));
-console.table(board);
 board[3][3] = 1;
 board[3][4] = 2;
 board[4][3] = 2;
@@ -57,18 +73,42 @@ function canPut(board, x, y){
             ny += dy;
             hasOpponentPiece = true;
         }
-        if(hasOpponentPiece && nx >= 0 && nx < 8 && ny >= 0 && ny < 8 && board[ny][nx] === 3 - turn){
+        if(hasOpponentPiece && nx >= 0 && nx < 8 && ny >= 0 && ny < 8 && board[ny][nx] === turn){
             return true
         }
     }
     return false
 }
 
+function flipPieces(x, y){
+    for (const [dx, dy] of dir){
+        let nx = x + dx;
+        let ny = y + dy;
+        let canFlip = [];
+
+        while(nx >= 0 && nx < 8 && ny >= 0 && ny < 8 && board[ny][nx] === 3 - turn){
+            canFlip.push([nx, ny]);
+            nx += dx;
+            ny += dy;
+        }
+
+        if(canFlip.length > 0 && nx >= 0 && nx < 8 && ny >= 0 && ny < 8 && board[ny][nx] === turn){
+            for (const [fx, fy] of canFlip){
+                board[fy][fx] = turn;
+            }
+        }
+    }
+}
+
 function clickHandler(board, x, y){
     if(canPut(board, x, y)){
         if(board[y][x] === 0){
             board[y][x] = turn;
+            flipPieces(x, y);
             turn = 3 - turn;
+            updateGame();
+        } else {
+            console.log("そこには置けません");
         }
     }
     
@@ -82,8 +122,11 @@ window.addEventListener("click", (e) => {
     const ny = Math.floor(y / 80);
 
 
+    console.clear();
     console.log(`座標は`,{nx, ny})
+    console.table(board);
     clickHandler(board, nx, ny)
 })
 
 drawBoard();
+drawPieces();
