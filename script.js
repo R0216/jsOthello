@@ -100,12 +100,32 @@ function flipPieces(x, y){
     }
 }
 
+function canPlayerMove(){
+    for (let y = 0; y < 8; y++){
+        for (let x = 0; x < 8; x++){
+            if (canPut(board, x, y,)){
+                return true;
+            }
+        }
+    }
+    return false;
+} 
+
 function clickHandler(board, x, y){
     if(canPut(board, x, y)){
         if(board[y][x] === 0){
             board[y][x] = turn;
             flipPieces(x, y);
             turn = 3 - turn;
+
+            if (!canPlayerMove()){
+                alert(turn === 1 ? "パス" : "パス")
+                turn = 3 - turn;
+
+                if (!canPlayerMove()){
+                    alert("終了");
+                }
+            }
             updateGame();
         } else {
             console.log("そこには置けません");
