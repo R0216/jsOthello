@@ -113,26 +113,22 @@ function canPlayerMove(){
 
 function clickHandler(board, x, y){
     if(canPut(board, x, y)){
-        if(board[y][x] === 0){
-            board[y][x] = turn;
-            flipPieces(x, y);
+        board[y][x] = turn;
+        flipPieces(x, y);
+        turn = 3 - turn;
+
+        if (!canPlayerMove()){
+            alert(turn === 1 ? "パス" : "パス")
             turn = 3 - turn;
 
             if (!canPlayerMove()){
-                alert(turn === 1 ? "パス" : "パス")
-                turn = 3 - turn;
-
-                if (!canPlayerMove()){
-                    alert("終了");
-                }
+                alert("終了");
             }
-            updateGame();
-        } else {
-            console.log("そこには置けません");
         }
+        updateGame();
+    } else {
+        console.log("そこには置けません");
     }
-    
-    console.log(board)
 }
 
 window.addEventListener("click", (e) => {
@@ -148,5 +144,4 @@ window.addEventListener("click", (e) => {
     clickHandler(board, nx, ny)
 })
 
-drawBoard();
-drawPieces();
+updateGame();
