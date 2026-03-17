@@ -159,6 +159,23 @@ function canPlayerMove(){
     return false;
 } 
 
+const weight = [
+    [100, -20, 10,  5,  5, 10, -20, 100],
+    [-20, -50, -2, -2, -2, -2, -50, -20],
+    [ 10,  -2,  5,  1,  1,  5,  -2,  10],
+    [  5,  -2,  1,  0,  0,  1,  -2,   5],
+    [  5,  -2,  1,  0,  0,  1,  -2,   5],
+    [ 10,  -2,  5,  1,  1,  5,  -2,  10],
+    [-20, -50, -2, -2, -2, -2, -50, -20],
+    [100, -20, 10,  5,  5, 10, -20, 100]
+];
+
+function getBestMove(canMove){
+    return canMove.reduce((best, current) => {
+        return (weight[current.y][current.x] > weight[best.y][best.x]) ? current : best;
+    });
+}
+
 function randomCPU(){
     const canList = []
     board.forEach((row, y) => {
@@ -175,15 +192,23 @@ function turnCPU(){
     const canMove = randomCPU();
     if(canMove.length === 0) return;
 
-    const corners = [
-        {x: 0, y: 0}, {x: 7, y: 0},
-        {x: 0, y: 7}, {x: 7, y: 7}
-    ];
-    const cornerMove = canMove.find(move =>
-        corners.some(corner => corner.x === move.x && corner.y === move.y)
-    );
+    const level = document.getElementById("difficulty").value;
+    let choice;
 
-    const choice = cornerMove || canMove[Math.floor(Math.random() * canMove.length)];
+    if(level === "1"){
+        choice = canMove[Math.floor(Math.random() * canMove.length)];
+    } else if (level === "2") {
+        const corners = [{x: 0, y: 0}, {x: 7, y: 0}, {x: 0, y: 7}, {x: 7, y: 7}];
+        const cornerMove = canMove.find(move =>
+            corners.some(corner => corner.x === move.x && corner.y === move.y)
+        );
+        choice = cornerMove || canMove[Math.floor(Math.random() * canMove.length)];
+    } else {
+        choice = getBestMove(canMove);
+    }
+    
+    
+
     setTimeout(() => {
         clickHandler(board, choice.x, choice.y)
     }, 1000)
