@@ -3,6 +3,22 @@ const context = canvas.getContext("2d");
 const rect = canvas.getBoundingClientRect();
 context.scale(80, 80);
 
+function resetGame(){
+    for (let y = 0; y < 8; y++){
+        for (let x = 0; x < 8; x++){
+            board[y][x] = 0;
+        }
+    }
+
+    board[3][3] = 1;
+    board[3][4] = 2;
+    board[4][3] = 2;
+    board[4][4] = 1;
+    turn = 1;
+
+    updateGame();
+}
+
 function updateScore(){
     let black = 0;
     let white = 0;
@@ -212,6 +228,12 @@ window.addEventListener("click", (e) => {
     console.table(board);
     clickHandler(board, nx, ny)
 })
+
+document.getElementById("reset-button").addEventListener("click", ()=> {
+    if(confirm("リセットしますか？")){
+        resetGame();
+    }
+});
 
 updateGame();
 
