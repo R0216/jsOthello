@@ -19,6 +19,18 @@ function updateScore(){
     document.getElementById('current-turn').textContent = (turn === 1) ? "黒" :"白";
 }
 
+function drawGuide(){
+    const canList = randomCPU();
+    canList.forEach(move => {
+        context.beginPath();
+        context.arc(move.x + 0.5, move.y + 0.5, 0.15, 0, Math.PI * 2);
+        context.fillStyle = "rgba(0, 0, 0, 0.2)";
+        context.fill();
+        context.closePath();
+    });
+
+}
+
 const dir = [
     [-1, 0],
     [-1, 1],
@@ -68,6 +80,7 @@ function updateGame(){
     drawBoard();
     drawPieces();
     updateScore();
+    drawGuide();
 }
 
 
@@ -116,6 +129,8 @@ function flipPieces(x, y){
         }
     }
 }
+
+
 
 function canPlayerMove(){
     for (let y = 0; y < 8; y++){
@@ -199,3 +214,5 @@ window.addEventListener("click", (e) => {
 })
 
 updateGame();
+
+
