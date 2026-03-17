@@ -4,6 +4,7 @@ const rect = canvas.getBoundingClientRect();
 context.scale(80, 80);
 
 function resetGame(){
+    clearTimeout(cpuTimer)
     for (let y = 0; y < 8; y++){
         for (let x = 0; x < 8; x++){
             board[y][x] = 0;
@@ -209,7 +210,7 @@ function turnCPU(){
     
     
 
-    setTimeout(() => {
+    cpuTimer = setTimeout(() => {
         clickHandler(board, choice.x, choice.y)
     }, 1000)
 }
