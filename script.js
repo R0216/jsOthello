@@ -125,15 +125,20 @@ function randomCPU(){
 
 function turnCPU(){
     const canMove = randomCPU();
-    if(canMove.length > 0){
-        const randomIndex = Math.floor(Math.random() * canMove.length);
-        const randomChoice = canMove[randomIndex];
+    if(canMove.length === 0) return;
 
-        setTimeout(() => {
-            clickHandler(board, randomChoice.x, randomChoice.y)
-        }, 1000)
-    }
-    
+    const corners = [
+        {x: 0, y: 0}, {x: 7, y: 0},
+        {x: 0, y: 7}, {x: 7, y: 7}
+    ];
+    const cornerMove = canMove.find(move =>
+        corners.some(corner => corner.x === move.x && corner.y === move.y)
+    );
+
+    const choice = cornerMove || canMove[Math.floor(Math.random() * canMove.length)];
+    setTimeout(() => {
+        clickHandler(board, choice.x, choice.y)
+    }, 1000)
 }
 
 function clickHandler(board, x, y){
