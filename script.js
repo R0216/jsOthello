@@ -111,12 +111,38 @@ function canPlayerMove(){
     return false;
 } 
 
+function randomCPU(){
+    const canList = []
+    board.forEach((row, y) => {
+        row.forEach((cell, x) => {
+            if(canPut(board, x, y)){
+                canList.push({x, y})
+            }
+        });
+    });
+    return canList
+}
+
+function turnCPU(){
+    const canMove = randomCPU();
+    if(canMove.length > 0){
+        const randomIndex = Math.floor(Math.random() * canMove.length);
+        const randomChoice = canMove[randomIndex];
+
+        setTimeout(() => {
+            clickHandler(board, randomChoice.x, randomChoice.y)
+        }, 1000)
+    }
+    
+}
+
 function clickHandler(board, x, y){
     if(canPut(board, x, y)){
         board[y][x] = turn;
         flipPieces(x, y);
         turn = 3 - turn;
 
+        updateGame();
         if (!canPlayerMove()){
             alert(turn === 1 ? "パス" : "パス")
             turn = 3 - turn;
@@ -125,7 +151,10 @@ function clickHandler(board, x, y){
                 alert("終了");
             }
         }
-        updateGame();
+        
+        if(turn === 2){
+            turnCPU();
+        }
     } else {
         console.log("そこには置けません");
     }
