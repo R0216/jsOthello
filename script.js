@@ -3,6 +3,22 @@ const context = canvas.getContext("2d");
 const rect = canvas.getBoundingClientRect();
 context.scale(80, 80);
 
+function updateScore(){
+    let black = 0;
+    let white = 0;
+
+    board.forEach(row => {
+        row.forEach(cell => {
+            if (cell === 1) black++;
+            if (cell === 2) white++;
+        });
+    });
+
+    document.getElementById('black-score').textContent = black;
+    document.getElementById('white-score').textContent = white;
+    document.getElementById('current-turn').textContent = (turn === 1) ? "黒" :"白";
+}
+
 const dir = [
     [-1, 0],
     [-1, 1],
@@ -51,6 +67,7 @@ function drawPieces(){
 function updateGame(){
     drawBoard();
     drawPieces();
+    updateScore();
 }
 
 
@@ -146,17 +163,20 @@ function clickHandler(board, x, y){
         board[y][x] = turn;
         flipPieces(x, y);
         turn = 3 - turn;
-
         updateGame();
+
+        
         if (!canPlayerMove()){
             alert(turn === 1 ? "パス" : "パス")
             turn = 3 - turn;
+            updateGame();
 
             if (!canPlayerMove()){
                 alert("終了");
             }
         }
         
+
         if(turn === 2){
             turnCPU();
         }
