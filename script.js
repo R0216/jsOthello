@@ -223,21 +223,18 @@ function clickHandler(board, x, y){
 
         
         if (!canPlayerMove()){
-            alert(turn === 1 ? "パス" : "パス")
             turn = 3 - turn;
-            updateGame();
-
             if (!canPlayerMove()){
                 alert("終了");
+                showFinalScore();
+            } else {
+                alert("パス")
+                updateGame();
+                if(turn === 2) turnCPU();
             }
-        }
-        
-
-        if(turn === 2){
+        } else if (turn === 2){
             turnCPU();
         }
-    } else {
-        console.log("そこには置けません");
     }
 }
 
